@@ -1,20 +1,27 @@
 import os 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+
 if os.path.exists("env.py"):
     import env
 
 
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.secret_key = os.environ.get('SECRET_KEY')
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 
-    db = SQLAlchemy(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+    
 
-
-from m_sphere import routes
+def create_app():
+    print(app.config['SQLALCHEMY_DATABASE_URI'])
+    from m_sphere import routes
+    return app
 
 
 
